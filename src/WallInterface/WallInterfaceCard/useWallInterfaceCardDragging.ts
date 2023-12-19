@@ -30,6 +30,7 @@ type useWallInterfaceCardDraggingPropsType = {
     dimensions: DimensionsType;
     setDimensions: Dispatch<SetStateAction<DimensionsType>>;
     draggingContext: WallInterfaceDraggingContextValue;
+    focusing: boolean;
 }
 
 const useWallInterfaceCardDragging = (props: useWallInterfaceCardDraggingPropsType) => {
@@ -125,7 +126,11 @@ const useWallInterfaceCardDragging = (props: useWallInterfaceCardDraggingPropsTy
         if (props.draggingContext.boardElement == null) return;
         if (props.cardRef.current == null) return;
 
-        if (props.cardProps.draggable !== true) return;
+        if (props.cardProps.draggable !== true) {
+            if (props.focusing !== true || props.cardProps.draggable !== 'after-focus') {
+                return
+            }
+        }
 
         const boardRect = props.draggingContext.boardElement.getBoundingClientRect();
         const cardRect = props.cardRef.current.getBoundingClientRect();

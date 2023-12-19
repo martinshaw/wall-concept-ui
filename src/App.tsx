@@ -10,14 +10,12 @@ function App() {
 
     return (
         <div className="App">
-            <WallInterfaceBoard
-            >
+            <WallInterfaceBoard>
                 <WallInterfaceCard
                     id={createCardId()}
                     initialPosition={{ x: 0, y: 0 }}
                     initialDimensions={{ w: 200, h: 200 }}
                     draggable={true}
-                    dragCursorPosition="center"
                 >
                     abcabc abcabc abcabc abcabc abcabc abcabc abcabc abcabc abcabc abcabc abcabc abcabc abcabc abcabc abcabc abcabc abcabc abcabc abcabc abcabc abcabc abcabc abcabc abcabc abcabc abcabc abcabc abcabc abcabc abcabc abcabc 
                 </WallInterfaceCard>
@@ -25,8 +23,7 @@ function App() {
                     id={createCardId()}
                     initialPosition={{ x: 300, y: 0 }}
                     initialDimensions={{ w: 200, h: 200 }}
-                    draggable={true}
-                    dragCursorPosition="mouse"
+                    draggable={false}
                 >
                     def
                 </WallInterfaceCard>
@@ -34,8 +31,7 @@ function App() {
                     id={createCardId()}
                     initialPosition={{ x: 600, y: 0 }}
                     initialDimensions={{ w: 123, h: 321 }}
-                    draggable={true}
-                    dragCursorPosition="bottom-right"
+                    draggable={'after-focus'}
                 >
                     ghi
                 </WallInterfaceCard>

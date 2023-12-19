@@ -26,9 +26,11 @@ const useWallInterfaceCardFocusing = (props: useWallInterfaceCardFocusingPropsTy
         if (event.button !== 0) return;
         if (props.cardRef.current == null) return;
 
+        if (props.cardProps.focusable !== true) return;
+
         props.focusingContext.clearCurrentlyFocusingCardIds();
         props.focusingContext.addCurrentlyFocusingCardId(props.cardProps.id);
-    }, [props.cardRef, props.cardProps.id]);
+    }, [props.cardRef, props.cardProps.id, props.cardProps.focusable]);
 
     return {
         focusing,

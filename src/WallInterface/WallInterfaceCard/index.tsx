@@ -31,8 +31,8 @@ export type WallInterfaceCardProps = {
 const WallInterfaceCard = (props: WallInterfaceCardProps) => {
     props = {
         focusable: true,
-        draggable: true,
-        dragCursorPosition: 'center',
+        draggable: 'after-focus',
+        dragCursorPosition: 'mouse',
         reorderToTopInHeirarchyOnFocus: true,
         reorderToTopInHeirarchyOnDrag: true,
         ...props,
@@ -42,6 +42,16 @@ const WallInterfaceCard = (props: WallInterfaceCardProps) => {
 
     const [position, setPosition] = useState<PositionType>(props.initialPosition);
     const [dimensions, setDimensions] = useState<DimensionsType>(props.initialDimensions);
+
+    const focusingContext = useContext(WallInterfaceFocusingContext);
+    const {
+        focusing,
+        handleFocusingOnClick,
+    } = useWallInterfaceCardFocusing({
+        cardProps: props,
+        cardRef,
+        focusingContext,
+    });
 
     const draggingContext = useContext(WallInterfaceDraggingContext);
     const {
@@ -56,16 +66,7 @@ const WallInterfaceCard = (props: WallInterfaceCardProps) => {
         dimensions,
         setDimensions,
         draggingContext,
-    });
-
-    const focusingContext = useContext(WallInterfaceFocusingContext);
-    const {
         focusing,
-        handleFocusingOnClick,
-    } = useWallInterfaceCardFocusing({
-        cardProps: props,
-        cardRef,
-        focusingContext,
     });
 
     const onMouseDown = useCallback<MouseEventHandler<HTMLDivElement>>(
@@ -89,6 +90,14 @@ const WallInterfaceCard = (props: WallInterfaceCardProps) => {
         [handleFocusingOnClick]
     );
 
+    const determineCursor = useCallback<() => 'grab' | 'grabbing' | 'pointer' | 'default'>(() => {
+        if (dragging && props.draggable !== false) return 'grabbing';
+        if (props.draggable === 'after-focus' && focusing) return 'grab';
+        if (props.draggable === true) return 'grab';
+        if (props.focusable) return 'pointer';
+        return 'default';
+    }, [dragging, focusing, props.draggable, props.focusable]);
+
     return (
         <div
             ref={cardRef}
@@ -103,7 +112,7 @@ const WallInterfaceCard = (props: WallInterfaceCardProps) => {
                 transform: `translate(${position.x}px, ${position.y}px)`,
                 userSelect: "none",
                 boxSizing: "border-box",
-                cursor: dragging ? "grabbing" : "grab",
+                cursor: determineCursor(),
             }}
         >   
             <div
