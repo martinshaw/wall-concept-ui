@@ -17,8 +17,9 @@ function App() {
                     initialDimensions={{ w: 200, h: 200 }}
                     draggable={true}
                     focusable={false}
+                    scaleContent={true}
                 >
-                    abcabc abcabc abcabc abcabc abcabc abcabc abcabc abcabc abcabc abcabc abcabc abcabc abcabc abcabc abcabc abcabc abcabc abcabc abcabc abcabc abcabc abcabc abcabc abcabc abcabc abcabc abcabc abcabc abcabc abcabc abcabc 
+                    ABCDEFGHJKLMNOPQRSTUVWXTZ ABCDEFGHJKLMNOPQRSTUVWXTZ ABCDEFGHJKLMNOPQRSTUVWXTZ ABCDEFGHJKLMNOPQRSTUVWXTZ ABCDEFGHJKLMNOPQRSTUVWXTZ ABCDEFGHJKLMNOPQRSTUVWXTZ ABCDEFGHJKLMNOPQRSTUVWXTZ ABCDEFGHJKLMNOPQRSTUVWXTZ ABCDEFGHJKLMNOPQRSTUVWXTZ ABCDEFGHJKLMNOPQRSTUVWXTZ ABCDEFGHJKLMNOPQRSTUVWXTZ ABCDEFGHJKLMNOPQRSTUVWXTZ ABCDEFGHJKLMNOPQRSTUVWXTZ ABCDEFGHJKLMNOPQRSTUVWXTZ ABCDEFGHJKLMNOPQRSTUVWXTZ ABCDEFGHJKLMNOPQRSTUVWXTZ ABCDEFGHJKLMNOPQRSTUVWXTZ ABCDEFGHJKLMNOPQRSTUVWXTZ 
                 </WallInterfaceCard>
                 <WallInterfaceCard
                     id={createCardId()}
@@ -26,7 +27,7 @@ function App() {
                     initialDimensions={{ w: 200, h: 200 }}
                     draggable={'after-focus'}
                 >
-                    def
+                    defksad asjd sadjaksksda ajd askdads ajds kaskdamsdi si
                 </WallInterfaceCard>
                 <WallInterfaceCard
                     id={createCardId()}

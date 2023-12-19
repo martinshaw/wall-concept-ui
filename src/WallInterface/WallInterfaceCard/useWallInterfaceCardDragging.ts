@@ -57,6 +57,9 @@ const useWallInterfaceCardDragging = (props: useWallInterfaceCardDraggingPropsTy
 
     const handleDraggingOnMouseUp = useCallback<MouseEventHandler<HTMLDivElement>>((event) => {
         setDragging(false);
+
+        if (props.cardProps.onDragEnd != null) props.cardProps.onDragEnd(props.cardProps);
+
         event.stopPropagation();
         event.preventDefault();
     }, []);
@@ -154,6 +157,8 @@ const useWallInterfaceCardDragging = (props: useWallInterfaceCardDraggingPropsTy
 
         const onMouseUp = (event: MouseEvent) => {
             setDragging(false);
+
+            if (props.cardProps.onDragEnd != null) props.cardProps.onDragEnd(props.cardProps);
         };
 
         props.draggingContext.boardElement?.removeEventListener("mousemove", onMouseMove);

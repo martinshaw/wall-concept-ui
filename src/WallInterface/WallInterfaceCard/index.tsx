@@ -15,6 +15,7 @@ import useWallInterfaceCardDragging, { WallInterfaceCardDraggingCursorPositionTy
 import { DimensionsType, PositionType } from "../utilities";
 import useWallInterfaceCardFocusing from "./useWallInterfaceCardFocusing";
 import WallInterfaceFocusingContext from "../WallInterfaceFocusingContext";
+import WallInterfaceCardScaleContent from "./WallInterfaceCardScaleContent";
 
 export type WallInterfaceCardProps = {
     id: string;
@@ -23,8 +24,13 @@ export type WallInterfaceCardProps = {
     focusable?: boolean;
     draggable?: boolean | 'after-focus';
     dragCursorPosition?: WallInterfaceCardDraggingCursorPositionType;
+    // TODO: Implement
     reorderToTopInHeirarchyOnFocus?: boolean;
+    // TODO: Implement
     reorderToTopInHeirarchyOnDrag?: boolean;
+    // TODO: Need to improve
+    scaleContent?: boolean;
+    onDragEnd?: (cardProps: WallInterfaceCardProps) => void;
     children: ReactNode;
 };
 
@@ -35,6 +41,8 @@ const WallInterfaceCard = (props: WallInterfaceCardProps) => {
         dragCursorPosition: 'mouse',
         reorderToTopInHeirarchyOnFocus: true,
         reorderToTopInHeirarchyOnDrag: true,
+        // scaleContent: true, // TODO: Use `true` once it's working
+        scaleContent: false,
         ...props,
     }
 
@@ -140,7 +148,15 @@ const WallInterfaceCard = (props: WallInterfaceCardProps) => {
                         borderRadius: "5px",
                     }}
                 >
-                    {props.children}
+                    <WallInterfaceCardScaleContent
+                        cardProps={props}
+                        cardRef={cardRef}
+                        scaleContent={props.scaleContent ?? true}
+                        cardPosition={position}
+                        cardDimensions={dimensions}
+                    >
+                        {props.children}
+                    </WallInterfaceCardScaleContent>
                 </div>
             </div>
         </div>
