@@ -9,21 +9,34 @@ Modified: 2023-12-18T20:07:29.076Z
 Description: description
 */
 
-import { ReactNode } from "react";
+import { MouseEventHandler, ReactNode, useCallback } from "react";
 import WallInterfaceDraggingContext, {
     useWallInterfaceDraggingContextValue,
 } from "../WallInterfaceDraggingContext";
+import WallInterfaceFocusingContext, { useWallInterfaceFocusingContextValue } from "../WallInterfaceFocusingContext";
 
 export type WallInterfaceBoardProps = {
     children: ReactNode;
 };
 
 const WallInterfaceBoard = (props: WallInterfaceBoardProps) => {
+    const wallInterfaceFocusingContextValue = useWallInterfaceFocusingContextValue();
     const wallInterfaceDraggingContextValue = useWallInterfaceDraggingContextValue();
+
+    const onClick = useCallback<MouseEventHandler<HTMLDivElement>>((event) => {
+        event.preventDefault();
+        event.stopPropagation();
+
+        if (event.target !== event.currentTarget) return;
+        
+        wallInterfaceFocusingContextValue.clearCurrentlyFocusingCardIds();
+    }, [wallInterfaceFocusingContextValue]);
 
     return (
         <div
-            className="board"
+            ref={(element) => wallInterfaceDraggingContextValue.setBoardElement(element)}
+            className="wall-interface__board"
+            onClick={onClick}
             style={{
                 userSelect: "none",
                 width: "100%",
@@ -34,13 +47,12 @@ const WallInterfaceBoard = (props: WallInterfaceBoardProps) => {
                 left: 0,
                 zIndex: 10,
             }}
-            ref={(element) => wallInterfaceDraggingContextValue.setBoardElement(element)}
         >
-            <WallInterfaceDraggingContext.Provider
-                value={wallInterfaceDraggingContextValue}
-            >
-                {props.children}
-            </WallInterfaceDraggingContext.Provider>
+            <WallInterfaceFocusingContext.Provider value={wallInterfaceFocusingContextValue}>
+                <WallInterfaceDraggingContext.Provider value={wallInterfaceDraggingContextValue}>
+                    {props.children}
+                </WallInterfaceDraggingContext.Provider>
+            </WallInterfaceFocusingContext.Provider>
         </div>
     );
 };

@@ -13,6 +13,8 @@ import { MouseEventHandler, ReactNode, useCallback, useContext, useEffect, useRe
 import WallInterfaceDraggingContext from "../WallInterfaceDraggingContext";
 import useWallInterfaceCardDragging, { WallInterfaceCardDraggingCursorPositionType } from "./useWallInterfaceCardDragging";
 import { DimensionsType, PositionType } from "../utilities";
+import useWallInterfaceCardFocusing from "./useWallInterfaceCardFocusing";
+import WallInterfaceFocusingContext from "../WallInterfaceFocusingContext";
 
 export type WallInterfaceCardProps = {
     id: string;
@@ -56,6 +58,16 @@ const WallInterfaceCard = (props: WallInterfaceCardProps) => {
         draggingContext,
     });
 
+    const focusingContext = useContext(WallInterfaceFocusingContext);
+    const {
+        focusing,
+        handleFocusingOnClick,
+    } = useWallInterfaceCardFocusing({
+        cardProps: props,
+        cardRef,
+        focusingContext,
+    });
+
     const onMouseDown = useCallback<MouseEventHandler<HTMLDivElement>>(
         (event) => {
             handleDraggingOnMouseDown(event);
@@ -70,25 +82,58 @@ const WallInterfaceCard = (props: WallInterfaceCardProps) => {
         [handleDraggingOnMouseUp]
     );
 
+    const onClick = useCallback<MouseEventHandler<HTMLDivElement>>(
+        (event) => {
+            handleFocusingOnClick(event);
+        },
+        [handleFocusingOnClick]
+    );
+
     return (
         <div
             ref={cardRef}
-            className="card"
+            className="wall-interface__card__container"
             onMouseDown={onMouseDown}
             onMouseUp={onMouseUp}
+            onClick={onClick}
             style={{
-                position: "absolute",
-                transform: `translate(${position.x}px, ${position.y}px)`,
                 width: `${dimensions.w}px`,
                 height: `${dimensions.h}px`,
+                position: "absolute",
+                transform: `translate(${position.x}px, ${position.y}px)`,
                 userSelect: "none",
+                boxSizing: "border-box",
                 cursor: dragging ? "grabbing" : "grab",
-                backgroundColor: "#eee",
-                boxShadow: "0 0 0 1px #ddd",
-                borderRadius: "3px",
             }}
-        >
-            <div>{props.children}</div>
+        >   
+            <div
+                className="wall-interface__card__focus-border"
+                style={{
+                    width: "100%",
+                    height: "100%",
+                    padding: "4px",
+                    overflow: "hidden",
+                    boxSizing: "border-box",
+                    boxShadow: focusing ? "0 0 0 2px #aaf8" : "none",
+                    borderRadius: "8px",
+                }}
+            >
+                <div
+                    className="wall-interface__card__content" 
+                    style={{
+                        width: "100%",
+                        height: "100%",
+                        padding: "5px",
+                        overflow: "hidden",
+                        boxSizing: "border-box",
+                        backgroundColor: "#eee",
+                        boxShadow: "0 0 0 1px #ddd",
+                        borderRadius: "5px",
+                    }}
+                >
+                    {props.children}
+                </div>
+            </div>
         </div>
     );
 };
