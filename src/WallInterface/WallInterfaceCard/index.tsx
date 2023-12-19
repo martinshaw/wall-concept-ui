@@ -94,7 +94,7 @@ const WallInterfaceCard = (props: WallInterfaceCardProps) => {
         if (dragging && props.draggable !== false) return 'grabbing';
         if (props.draggable === 'after-focus' && focusing) return 'grab';
         if (props.draggable === true) return 'grab';
-        if (props.focusable) return 'pointer';
+        if (props.focusable && focusing === false) return 'pointer';
         return 'default';
     }, [dragging, focusing, props.draggable, props.focusable]);
 

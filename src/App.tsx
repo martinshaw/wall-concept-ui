@@ -16,6 +16,7 @@ function App() {
                     initialPosition={{ x: 0, y: 0 }}
                     initialDimensions={{ w: 200, h: 200 }}
                     draggable={true}
+                    focusable={false}
                 >
                     abcabc abcabc abcabc abcabc abcabc abcabc abcabc abcabc abcabc abcabc abcabc abcabc abcabc abcabc abcabc abcabc abcabc abcabc abcabc abcabc abcabc abcabc abcabc abcabc abcabc abcabc abcabc abcabc abcabc abcabc abcabc 
                 </WallInterfaceCard>
@@ -23,7 +24,7 @@ function App() {
                     id={createCardId()}
                     initialPosition={{ x: 300, y: 0 }}
                     initialDimensions={{ w: 200, h: 200 }}
-                    draggable={false}
+                    draggable={'after-focus'}
                 >
                     def
                 </WallInterfaceCard>
