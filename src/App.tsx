@@ -1,7 +1,7 @@
 import React from "react";
 import "./App.css";
-import Board from "./Board";
-import Card from "./Card";
+import WallInterfaceBoard from "./WallInterface/WallInterfaceBoard";
+import WallInterfaceCard from "./WallInterface/WallInterfaceCard";
 
 function App() {
     const createCardId = () => {
@@ -10,29 +10,36 @@ function App() {
 
     return (
         <div className="App">
-            <Board>
-                <Card
+            <WallInterfaceBoard
+            >
+                <WallInterfaceCard
                     id={createCardId()}
                     initialPosition={{ x: 0, y: 0 }}
                     initialDimensions={{ w: 200, h: 200 }}
+                    draggable={true}
+                    dragCursorPosition="mouse"
                 >
                     abc
-                </Card>
-                <Card
+                </WallInterfaceCard>
+                <WallInterfaceCard
                     id={createCardId()}
                     initialPosition={{ x: 300, y: 0 }}
                     initialDimensions={{ w: 200, h: 200 }}
+                    draggable={true}
+                    dragCursorPosition="mouse"
                 >
                     def
-                </Card>
-                <Card
+                </WallInterfaceCard>
+                <WallInterfaceCard
                     id={createCardId()}
                     initialPosition={{ x: 600, y: 0 }}
                     initialDimensions={{ w: 200, h: 200 }}
+                    draggable={true}
+                    dragCursorPosition="mouse"
                 >
                     ghi
-                </Card>
-            </Board>
+                </WallInterfaceCard>
+            </WallInterfaceBoard>
         </div>
     );
 }

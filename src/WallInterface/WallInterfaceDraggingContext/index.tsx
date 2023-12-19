@@ -11,7 +11,7 @@ Description: description
 
 import { createContext, useState } from "react";
 
-export type BoardCardDraggingContextValue = {
+export type WallInterfaceDraggingContextValue = {
     currentlyDraggingCardId: string | null;
     setCurrentlyDraggingCardId: (cardId: string | null) => void;
 
@@ -19,7 +19,7 @@ export type BoardCardDraggingContextValue = {
     setBoardElement: (element: HTMLDivElement | null) => void;
 };
 
-const BoardCardDraggingContext = createContext<BoardCardDraggingContextValue>({
+const WallInterfaceDraggingContext = createContext<WallInterfaceDraggingContextValue>({
     currentlyDraggingCardId: null,
     setCurrentlyDraggingCardId: () => { },
 
@@ -27,7 +27,7 @@ const BoardCardDraggingContext = createContext<BoardCardDraggingContextValue>({
     setBoardElement: () => { },
 });
 
-const useBoardCardDraggingContextValue = (): BoardCardDraggingContextValue => {
+const useWallInterfaceDraggingContextValue = (): WallInterfaceDraggingContextValue => {
     const [currentlyDraggingCardId, setCurrentlyDraggingCardId] = useState<
         string | null
     >(null);
@@ -45,5 +45,5 @@ const useBoardCardDraggingContextValue = (): BoardCardDraggingContextValue => {
     };
 };
 
-export default BoardCardDraggingContext;
-export { useBoardCardDraggingContextValue };
+export default WallInterfaceDraggingContext;
+export { useWallInterfaceDraggingContextValue };

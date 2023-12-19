@@ -10,16 +10,16 @@ Description: description
 */
 
 import { ReactNode } from "react";
-import BoardCardDraggingContext, {
-    useBoardCardDraggingContextValue,
-} from "./BoardCardDraggingContext";
+import WallInterfaceDraggingContext, {
+    useWallInterfaceDraggingContextValue,
+} from "../WallInterfaceDraggingContext";
 
-export type BoardProps = {
+export type WallInterfaceBoardProps = {
     children: ReactNode;
 };
 
-const Board = (props: BoardProps) => {
-    const boardCardDraggingContextValue = useBoardCardDraggingContextValue();
+const WallInterfaceBoard = (props: WallInterfaceBoardProps) => {
+    const wallInterfaceDraggingContextValue = useWallInterfaceDraggingContextValue();
 
     return (
         <div
@@ -34,15 +34,16 @@ const Board = (props: BoardProps) => {
                 left: 0,
                 zIndex: 10,
             }}
-            ref={(element) => boardCardDraggingContextValue.setBoardElement(element)}
+            ref={(element) => wallInterfaceDraggingContextValue.setBoardElement(element)}
         >
-            <BoardCardDraggingContext.Provider
-                value={boardCardDraggingContextValue}
+            <WallInterfaceDraggingContext.Provider
+                value={wallInterfaceDraggingContextValue}
             >
                 {props.children}
-            </BoardCardDraggingContext.Provider>
+            </WallInterfaceDraggingContext.Provider>
         </div>
     );
 };
 
-export default Board;
+export default WallInterfaceBoard;
+
