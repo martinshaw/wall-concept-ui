@@ -10,11 +10,11 @@ Description: description
 */
 
 import { ReactNode, RefObject, useEffect, useRef, useState } from "react";
-import { WallInterfaceCardProps } from "..";
+import { WallInterfaceCardPropsType } from "..";
 import { DimensionsType, PositionType } from "../../utilities";
 
 type WallInterfaceCardScaleContentPropsType = {
-    cardProps: WallInterfaceCardProps;
+    cardProps: WallInterfaceCardPropsType;
     cardRef: RefObject<HTMLDivElement>;
     scaleContent: boolean;
     cardPosition: PositionType;

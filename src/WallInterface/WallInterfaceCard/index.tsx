@@ -9,20 +9,21 @@ Modified: 2023-12-18T20:07:32.888Z
 Description: description
 */
 
-import { MouseEventHandler, ReactNode, useCallback, useContext, useEffect, useRef, useState } from "react";
-import WallInterfaceDraggingContext from "../WallInterfaceDraggingContext";
+import { MouseEventHandler, ReactNode, useCallback, useRef, useState } from "react";
 import useWallInterfaceCardDragging, { WallInterfaceCardDraggingCursorPositionType } from "./useWallInterfaceCardDragging";
 import { DimensionsType, PositionType } from "../utilities";
 import useWallInterfaceCardFocusing from "./useWallInterfaceCardFocusing";
-import WallInterfaceFocusingContext from "../WallInterfaceFocusingContext";
 import WallInterfaceCardScaleContent from "./WallInterfaceCardScaleContent";
+import useWallInterfaceCardResizing, { WallInterfaceCardPropsResizableType } from "./WallInterfaceCardResizeBorder";
+import WallInterfaceCardResizeBorder from "./WallInterfaceCardResizeBorder";
 
-export type WallInterfaceCardProps = {
+export type WallInterfaceCardPropsType = {
     id: string;
     initialPosition: PositionType;
     initialDimensions: DimensionsType;
     focusable?: boolean;
     draggable?: boolean | 'after-focus';
+    resizable?: WallInterfaceCardPropsResizableType;
     dragCursorPosition?: WallInterfaceCardDraggingCursorPositionType;
     // TODO: Implement
     reorderToTopInHeirarchyOnFocus?: boolean;
@@ -30,38 +31,34 @@ export type WallInterfaceCardProps = {
     reorderToTopInHeirarchyOnDrag?: boolean;
     // TODO: Need to improve
     scaleContent?: boolean;
-    onDragEnd?: (cardProps: WallInterfaceCardProps) => void;
+    onDragEnd?: (cardProps: WallInterfaceCardPropsType) => void;
     children: ReactNode;
 };
 
-const WallInterfaceCard = (props: WallInterfaceCardProps) => {
+const WallInterfaceCard = (props: WallInterfaceCardPropsType) => {
     props = {
         focusable: true,
         draggable: 'after-focus',
         dragCursorPosition: 'mouse',
         reorderToTopInHeirarchyOnFocus: true,
         reorderToTopInHeirarchyOnDrag: true,
-        // scaleContent: true, // TODO: Use `true` once it's working
-        scaleContent: false,
+        scaleContent: false, // TODO: Use `true` once it's working
         ...props,
     }
 
     const cardRef = useRef<HTMLDivElement>(null);
-
+    
     const [position, setPosition] = useState<PositionType>(props.initialPosition);
     const [dimensions, setDimensions] = useState<DimensionsType>(props.initialDimensions);
-
-    const focusingContext = useContext(WallInterfaceFocusingContext);
+    
     const {
         focusing,
         handleFocusingOnClick,
     } = useWallInterfaceCardFocusing({
         cardProps: props,
         cardRef,
-        focusingContext,
     });
 
-    const draggingContext = useContext(WallInterfaceDraggingContext);
     const {
         dragging,
         handleDraggingOnMouseDown,
@@ -73,7 +70,6 @@ const WallInterfaceCard = (props: WallInterfaceCardProps) => {
         setPosition,
         dimensions,
         setDimensions,
-        draggingContext,
         focusing,
     });
 
@@ -122,43 +118,51 @@ const WallInterfaceCard = (props: WallInterfaceCardProps) => {
                 boxSizing: "border-box",
                 cursor: determineCursor(),
             }}
-        >   
-            <div
-                className="wall-interface__card__focus-border"
-                style={{
-                    width: "100%",
-                    height: "100%",
-                    padding: "4px",
-                    overflow: "hidden",
-                    boxSizing: "border-box",
-                    boxShadow: focusing ? "0 0 0 2px #aaf8" : "none",
-                    borderRadius: "8px",
-                }}
+        >
+            <WallInterfaceCardResizeBorder
+                cardProps={props}
+                cardRef={cardRef}
+                focusing={focusing}
+                dimensions={dimensions}
+                setDimensions={setDimensions}
             >
                 <div
-                    className="wall-interface__card__content" 
+                    className="wall-interface__card__focus-border"
                     style={{
                         width: "100%",
                         height: "100%",
-                        padding: "5px",
+                        padding: "4px",
                         overflow: "hidden",
                         boxSizing: "border-box",
-                        backgroundColor: "#eee",
-                        boxShadow: "0 0 0 1px #ddd",
-                        borderRadius: "5px",
+                        boxShadow: focusing ? "0 0 0 2px #aaf8" : "none",
+                        borderRadius: "8px",
                     }}
                 >
-                    <WallInterfaceCardScaleContent
-                        cardProps={props}
-                        cardRef={cardRef}
-                        scaleContent={props.scaleContent ?? true}
-                        cardPosition={position}
-                        cardDimensions={dimensions}
+                    <div
+                        className="wall-interface__card__content"
+                        style={{
+                            width: "100%",
+                            height: "100%",
+                            padding: "5px",
+                            overflow: "hidden",
+                            boxSizing: "border-box",
+                            backgroundColor: "#eee",
+                            boxShadow: "0 0 0 1px #ddd",
+                            borderRadius: "5px",
+                        }}
                     >
-                        {props.children}
-                    </WallInterfaceCardScaleContent>
+                        <WallInterfaceCardScaleContent
+                            cardProps={props}
+                            cardRef={cardRef}
+                            scaleContent={props.scaleContent ?? true}
+                            cardPosition={position}
+                            cardDimensions={dimensions}
+                        >
+                            {props.children}
+                        </WallInterfaceCardScaleContent>
+                    </div>
                 </div>
-            </div>
+            </WallInterfaceCardResizeBorder>
         </div>
     );
 };

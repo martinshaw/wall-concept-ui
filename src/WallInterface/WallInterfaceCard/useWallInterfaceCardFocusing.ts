@@ -9,18 +9,19 @@ Modified: 2023-12-19T17:23:23.846Z
 Description: description
 */
 
-import { MouseEventHandler, RefObject, useCallback, useState } from "react";
-import { WallInterfaceCardProps } from ".";
-import { WallInterfaceFocusingContextValue } from "../WallInterfaceFocusingContext";
+import { MouseEventHandler, RefObject, useCallback, useContext } from "react";
+import { WallInterfaceCardPropsType } from ".";
+import WallInterfaceFocusingContext, { WallInterfaceFocusingContextValue } from "../WallInterfaceFocusingContext";
 
 type useWallInterfaceCardFocusingPropsType = {
-    cardProps: WallInterfaceCardProps;
+    cardProps: WallInterfaceCardPropsType;
     cardRef: RefObject<HTMLDivElement>;
-    focusingContext: WallInterfaceFocusingContextValue;
 }
 
 const useWallInterfaceCardFocusing = (props: useWallInterfaceCardFocusingPropsType) => {
-    const focusing = props.focusingContext.hasCurrentlyFocusingCardId(props.cardProps.id);
+    const focusingContext = useContext(WallInterfaceFocusingContext);
+
+    const focusing = focusingContext.hasCurrentlyFocusingCardId(props.cardProps.id);
 
     const handleFocusingOnClick = useCallback<MouseEventHandler<HTMLDivElement>>((event) => {
         if (event.button !== 0) return;
@@ -28,9 +29,9 @@ const useWallInterfaceCardFocusing = (props: useWallInterfaceCardFocusingPropsTy
 
         if (props.cardProps.focusable !== true) return;
 
-        props.focusingContext.clearCurrentlyFocusingCardIds();
-        props.focusingContext.addCurrentlyFocusingCardId(props.cardProps.id);
-    }, [props.cardRef, props.cardProps.id, props.cardProps.focusable]);
+        focusingContext.clearCurrentlyFocusingCardIds();
+        focusingContext.addCurrentlyFocusingCardId(props.cardProps.id);
+    }, [props.cardRef, props.cardProps.id, props.cardProps.focusable, focusingContext]);
 
     return {
         focusing,

@@ -4,9 +4,7 @@ import WallInterfaceBoard from "./WallInterface/WallInterfaceBoard";
 import WallInterfaceCard from "./WallInterface/WallInterfaceCard";
 
 function App() {
-    const createCardId = () => {
-        return Math.random().toString(36).substr(2, 9);
-    };
+    const createCardId = () => (new Date()).getTime().toString() + '_' + Math.random().toString(36).substr(2, 9);
 
     return (
         <div className="App">
@@ -18,23 +16,39 @@ function App() {
                     draggable={true}
                     focusable={false}
                 >
-                    ABCDEFGHJKLMNOPQRSTUVWXTZ ABCDEFGHJKLMNOPQRSTUVWXTZ ABCDEFGHJKLMNOPQRSTUVWXTZ ABCDEFGHJKLMNOPQRSTUVWXTZ ABCDEFGHJKLMNOPQRSTUVWXTZ ABCDEFGHJKLMNOPQRSTUVWXTZ ABCDEFGHJKLMNOPQRSTUVWXTZ ABCDEFGHJKLMNOPQRSTUVWXTZ ABCDEFGHJKLMNOPQRSTUVWXTZ ABCDEFGHJKLMNOPQRSTUVWXTZ ABCDEFGHJKLMNOPQRSTUVWXTZ ABCDEFGHJKLMNOPQRSTUVWXTZ ABCDEFGHJKLMNOPQRSTUVWXTZ ABCDEFGHJKLMNOPQRSTUVWXTZ ABCDEFGHJKLMNOPQRSTUVWXTZ ABCDEFGHJKLMNOPQRSTUVWXTZ ABCDEFGHJKLMNOPQRSTUVWXTZ ABCDEFGHJKLMNOPQRSTUVWXTZ 
+                    Draggable, not focusable
                 </WallInterfaceCard>
                 <WallInterfaceCard
                     id={createCardId()}
-                    initialPosition={{ x: 300, y: 0 }}
+                    initialPosition={{ x: 0, y: 200 }}
+                    initialDimensions={{ w: 200, h: 200 }}
+                    draggable={false}
+                    focusable={true}
+                >
+                    Not draggable, focusable
+                </WallInterfaceCard>
+
+                <WallInterfaceCard
+                    id={createCardId()}
+                    initialPosition={{ x: 0, y: 400 }}
+                    initialDimensions={{ w: 200, h: 200 }}
+                    draggable={true}
+                    focusable={true}
+                    resizable={{
+                        "top-left": true,
+                    }}
+                >
+                    Draggable, focusable
+                </WallInterfaceCard>
+
+                <WallInterfaceCard
+                    id={createCardId()}
+                    initialPosition={{ x: 200, y: 0 }}
                     initialDimensions={{ w: 200, h: 200 }}
                     draggable={'after-focus'}
+                    focusable={true}
                 >
-                    defksad asjd sadjaksksda ajd askdads ajds kaskdamsdi si
-                </WallInterfaceCard>
-                <WallInterfaceCard
-                    id={createCardId()}
-                    initialPosition={{ x: 600, y: 0 }}
-                    initialDimensions={{ w: 123, h: 321 }}
-                    draggable={'after-focus'}
-                >
-                    ghi
+                    Draggable after focus, focusable    
                 </WallInterfaceCard>
             </WallInterfaceBoard>
         </div>

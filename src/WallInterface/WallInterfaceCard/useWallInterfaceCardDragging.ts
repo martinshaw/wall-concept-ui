@@ -9,10 +9,10 @@ Modified: 2023-12-19T16:56:22.568Z
 Description: description
 */
 
-import { Dispatch, MouseEventHandler, SetStateAction, useCallback, useEffect, useState } from "react";
+import { Dispatch, MouseEventHandler, SetStateAction, useCallback, useContext, useEffect, useState } from "react";
 import { DimensionsType, PositionType } from "../utilities";
-import { WallInterfaceDraggingContextValue } from "../WallInterfaceDraggingContext";
-import { WallInterfaceCardProps } from ".";
+import WallInterfaceDraggingContext from "../WallInterfaceDraggingContext";
+import { WallInterfaceCardPropsType } from ".";
 
 export type WallInterfaceCardDraggingCursorPositionType =
     | "top-left"
@@ -23,17 +23,18 @@ export type WallInterfaceCardDraggingCursorPositionType =
     | 'bottom-right';
 
 type useWallInterfaceCardDraggingPropsType = {
-    cardProps: WallInterfaceCardProps;
+    cardProps: WallInterfaceCardPropsType;
     cardRef: React.RefObject<HTMLDivElement>;
     position: PositionType;
     setPosition: Dispatch<SetStateAction<PositionType>>;
     dimensions: DimensionsType;
     setDimensions: Dispatch<SetStateAction<DimensionsType>>;
-    draggingContext: WallInterfaceDraggingContextValue;
     focusing: boolean;
 }
 
 const useWallInterfaceCardDragging = (props: useWallInterfaceCardDraggingPropsType) => {
+    const draggingContext = useContext(WallInterfaceDraggingContext);
+
     const [dragging, setDragging] = useState<boolean>(false);
 
     // Mouse offset from card's position (top-left corner), because card position is only updated on mouse up
@@ -53,7 +54,7 @@ const useWallInterfaceCardDragging = (props: useWallInterfaceCardDraggingPropsTy
 
         event.stopPropagation();
         event.preventDefault();
-    }, [props.cardRef]);
+    }, [props]);
 
     const handleDraggingOnMouseUp = useCallback<MouseEventHandler<HTMLDivElement>>((event) => {
         setDragging(false);
@@ -62,7 +63,7 @@ const useWallInterfaceCardDragging = (props: useWallInterfaceCardDraggingPropsTy
 
         event.stopPropagation();
         event.preventDefault();
-    }, []);
+    }, [props]);
 
     const determineNewCardPosition = useCallback<
         ( 
@@ -126,7 +127,8 @@ const useWallInterfaceCardDragging = (props: useWallInterfaceCardDraggingPropsTy
     ]);
 
     useEffect(() => {
-        if (props.draggingContext.boardElement == null) return;
+
+        if (draggingContext.boardElement == null) return;
         if (props.cardRef.current == null) return;
 
         if (props.cardProps.draggable !== true) {
@@ -135,7 +137,7 @@ const useWallInterfaceCardDragging = (props: useWallInterfaceCardDraggingPropsTy
             }
         }
 
-        const boardRect = props.draggingContext.boardElement.getBoundingClientRect();
+        const boardRect = draggingContext.boardElement.getBoundingClientRect();
         const cardRect = props.cardRef.current.getBoundingClientRect();
 
         const onMouseMove = (event: MouseEvent) => {
@@ -161,23 +163,28 @@ const useWallInterfaceCardDragging = (props: useWallInterfaceCardDraggingPropsTy
             if (props.cardProps.onDragEnd != null) props.cardProps.onDragEnd(props.cardProps);
         };
 
-        props.draggingContext.boardElement?.removeEventListener("mousemove", onMouseMove);
-        props.draggingContext.boardElement?.removeEventListener("mouseup", onMouseUp);
+        draggingContext.boardElement?.removeEventListener("mousemove", onMouseMove);
+        draggingContext.boardElement?.removeEventListener("mouseup", onMouseUp);
 
-        props.draggingContext.boardElement.addEventListener("mousemove", onMouseMove);
-        props.draggingContext.boardElement.addEventListener("mouseup", onMouseUp);
+        draggingContext.boardElement.addEventListener("mousemove", onMouseMove);
+        draggingContext.boardElement.addEventListener("mouseup", onMouseUp);
 
         return () => {
-            if (props.draggingContext.boardElement == null) return;
+            if (draggingContext.boardElement == null) return;
 
-            props.draggingContext.boardElement?.removeEventListener("mousemove", onMouseMove);
-            props.draggingContext.boardElement?.removeEventListener("mouseup", onMouseUp);
+            draggingContext.boardElement?.removeEventListener("mousemove", onMouseMove);
+            draggingContext.boardElement?.removeEventListener("mouseup", onMouseUp);
         };
     }, [
-        props.draggingContext.boardElement,
+        draggingContext.boardElement,
         dragging,
         props.cardProps.draggable,
         determineNewCardPosition,
+        props.cardProps.onDragEnd,
+        props.cardRef,
+        props.position,
+        props.focusing,
+        props,
     ])
 
     return {
