@@ -146,7 +146,7 @@ const WallInterfaceCard = (props: WallInterfaceCardPropsType) => {
                             padding: "5px",
                             overflow: "hidden",
                             boxSizing: "border-box",
-                            backgroundColor: "#eee",
+                            backgroundColor: "#fff",
                             boxShadow: "0 0 0 1px #ddd",
                             borderRadius: "5px",
                         }}

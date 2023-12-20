@@ -46,6 +46,14 @@ const WallInterfaceBoard = (props: WallInterfaceBoardProps) => {
                 top: 0,
                 left: 0,
                 zIndex: 10,
+                // backgroundImage: 'url("' + process.env.PUBLIC_URL + '/45degreee_fabric_result.jpg")',
+                // backgroundImage: 'url("' + process.env.PUBLIC_URL + '/blizzard_result.jpg")',
+                // backgroundImage: 'url("' + process.env.PUBLIC_URL + '/brillant_result.jpg")',
+                // backgroundImage: 'url("' + process.env.PUBLIC_URL + '/cream_dust_result.jpg")',
+                // backgroundImage: 'url("' + process.env.PUBLIC_URL + '/crossword.png")',
+                // backgroundImage: 'url("' + process.env.PUBLIC_URL + '/dot-grid_result.jpg")',
+                backgroundImage: 'url("' + process.env.PUBLIC_URL + '/subtle_dots_result.jpg")',
+                backgroundRepeat: 'repeat',
             }}
         >
             <WallInterfaceFocusingContext.Provider value={wallInterfaceFocusingContextValue}>

@@ -11,7 +11,7 @@ Description: description
 
 import { MouseEventHandler, RefObject, useCallback, useContext } from "react";
 import { WallInterfaceCardPropsType } from ".";
-import WallInterfaceFocusingContext, { WallInterfaceFocusingContextValue } from "../WallInterfaceFocusingContext";
+import WallInterfaceFocusingContext from "../WallInterfaceFocusingContext";
 
 type useWallInterfaceCardFocusingPropsType = {
     cardProps: WallInterfaceCardPropsType;

@@ -9,9 +9,9 @@ Modified: 2023-12-20T11:09:20.227Z
 Description: description
 */
 
-import { CSSProperties, ReactNode, RefObject, useEffect, useRef, useState } from "react";
+import { CSSProperties, MouseEventHandler, ReactNode, RefObject, useCallback, useEffect, useRef, useState } from "react";
 import { WallInterfaceCardPropsType } from "..";
-import { DimensionsType } from "./../../utilities";
+import { DimensionsType, PositionType } from "./../../utilities";
 
 export type WallInterfaceCardPropsResizableType = boolean | {
     "top-left"?: boolean;
@@ -24,7 +24,7 @@ export type WallInterfaceCardPropsResizableType = boolean | {
     "right"?: boolean;
 }
 
-export type WallInterfaceCardResizeHintingType = {
+type WallInterfaceCardResizingType = {
     "top-left"?: boolean;
     "top-right"?: boolean;
     "top"?: boolean;
@@ -33,6 +33,17 @@ export type WallInterfaceCardResizeHintingType = {
     "bottom"?: boolean;
     "left"?: boolean;
     "right"?: boolean;
+}
+
+type WallInterfaceCardResizeHintingType = {
+    "top-left"?: 'hidden' | 'visible' | 'hover';
+    "top-right"?: 'hidden' | 'visible' | 'hover';
+    "top"?: 'hidden' | 'visible' | 'hover';
+    "bottom-left"?: 'hidden' | 'visible' | 'hover';
+    "bottom-right"?: 'hidden' | 'visible' | 'hover';
+    "bottom"?: 'hidden' | 'visible' | 'hover';
+    "left"?: 'hidden' | 'visible' | 'hover';
+    "right"?: 'hidden' | 'visible' | 'hover';
 }
 
 type WallInterfaceCardResizingPropsType = {
@@ -47,31 +58,93 @@ type WallInterfaceCardResizingPropsType = {
 const WallInterfaceCardResizeBorder = (props: WallInterfaceCardResizingPropsType) => {
     const resizingBorderRef = useRef<HTMLDivElement>(null);
 
-    const [resizeHinting, setResizeHinting] = useState<WallInterfaceCardResizeHintingType>({
-        "top-left": true,
-        "top-right": true,
-        "top": true,
-        "bottom-left": true,
-        "bottom-right": true,
-        "bottom": true,
-        "left": true,
-        "right": true,
+    const [resizing, setResizing] = useState<WallInterfaceCardResizingType>({
+        "top-left": false,
+        "top-right": false,
+        "top": false,
+        "bottom-left": false,
+        "bottom-right": false,
+        "bottom": false,
+        "left": false,
+        "right": false,
     });
 
-    useEffect(() => {
-        if (props.cardRef.current == null) return;
-        if (resizingBorderRef.current == null) return;
-
-        const resizingBorderRect = resizingBorderRef.current.getBoundingClientRect();
-
-        console.log('resizingBorderRect', resizingBorderRect);
-
-    }, [props.cardProps.resizable, props])
+    const [resizeHinting, setResizeHinting] = useState<WallInterfaceCardResizeHintingType>({
+        "top-left": 'hidden',
+        "top-right": 'hidden',
+        "top": 'hidden',
+        "bottom-left": 'hidden',
+        "bottom-right": 'hidden',
+        "bottom": 'hidden',
+        "left": 'hidden',
+        "right": 'hidden',
+    });
 
     const hintDimensions: DimensionsType = {
         w: 30,
         h: 30,
     }
+
+    const onMouseMove: MouseEventHandler<HTMLDivElement> = useCallback((event) => {
+        event.preventDefault();
+        event.stopPropagation();
+
+        if (props.cardProps.resizable === false) return;
+        if (props.cardRef.current == null) return;
+
+        const cardRect = props.cardRef.current.getBoundingClientRect();
+
+        const mousePositionRelativeToCard: PositionType = {
+            x: event.clientX - cardRect.x,
+            y: event.clientY - cardRect.y,
+        }
+
+        const newResizeHinting: WallInterfaceCardResizeHintingType = {
+            "top-left": 'hidden',
+            "top-right": 'hidden',
+            "top": 'hidden',
+            "bottom-left": 'hidden',
+            "bottom-right": 'hidden',
+            "bottom": 'hidden',
+            "left": 'hidden',
+            "right": 'hidden',
+        };
+
+        if (mousePositionRelativeToCard.x < hintDimensions.w && (props.cardProps.resizable === true || props.cardProps.resizable?.["left"] === true))
+            newResizeHinting["left"] = resizing['left'] ? 'hover' : 'visible';
+
+        if (mousePositionRelativeToCard.x > (cardRect.width - hintDimensions.w) && (props.cardProps.resizable === true || props.cardProps.resizable?.["right"] === true))
+            newResizeHinting["right"] = resizing['right'] ? 'hover' : 'visible';
+
+        if (mousePositionRelativeToCard.y < hintDimensions.h && (props.cardProps.resizable === true || props.cardProps.resizable?.["top"] === true))
+            newResizeHinting["top"] = resizing['top'] ? 'hover' : 'visible';
+
+        if (mousePositionRelativeToCard.y > (cardRect.height - hintDimensions.h) && (props.cardProps.resizable === true || props.cardProps.resizable?.["bottom"] === true))
+            newResizeHinting["bottom"] = resizing['bottom'] ? 'hover' : 'visible';
+
+        if (mousePositionRelativeToCard.x < hintDimensions.w && mousePositionRelativeToCard.y < hintDimensions.h && (props.cardProps.resizable === true || props.cardProps.resizable?.["top-left"] === true))
+            newResizeHinting["top-left"] = resizing['top-left'] ? 'hover' : 'visible';
+
+        if (mousePositionRelativeToCard.x > (cardRect.width - hintDimensions.w) && mousePositionRelativeToCard.y < hintDimensions.h && (props.cardProps.resizable === true || props.cardProps.resizable?.["top-right"] === true))
+            newResizeHinting["top-right"] = resizing['top-right'] ? 'hover' : 'visible';
+
+        if (mousePositionRelativeToCard.x < hintDimensions.w && mousePositionRelativeToCard.y > (cardRect.height - hintDimensions.h) && (props.cardProps.resizable === true || props.cardProps.resizable?.["bottom-left"] === true))
+            newResizeHinting["bottom-left"] = resizing['bottom-left'] ? 'hover' : 'visible';
+
+        if (mousePositionRelativeToCard.x > (cardRect.width - hintDimensions.w) && mousePositionRelativeToCard.y > (cardRect.height - hintDimensions.h) && (props.cardProps.resizable === true || props.cardProps.resizable?.["bottom-right"] === true))
+            newResizeHinting["bottom-right"] = resizing['bottom-right'] ? 'hover' : 'visible';
+
+        setResizeHinting(newResizeHinting);
+    }, [props, hintDimensions, resizing])
+
+    // useEffect(() => {
+    //     if (props.cardRef.current == null) return;
+    //     if (resizingBorderRef.current == null) return;
+
+    //     const handle
+
+
+    // }, [resizingBorderRef, props.cardProps.resizable, props])
 
     const containerStyle: CSSProperties = {
         width: '100%',
@@ -118,11 +191,12 @@ const WallInterfaceCardResizeBorder = (props: WallInterfaceCardResizingPropsType
             ...hintCommonStyle,
             top: '0%',
             left: '0%',
+            cursor: 'nwse-resize',
         }}
     >
-        <svg width="100%" height="100%" viewBox="0 0 100 100">
+        {/* <svg width="100%" height="100%" viewBox="0 0 100 100">
             <path d="M 0 50 L 0 0 L 50 0" style={hintSvgStyle}  />
-        </svg>
+        </svg> */}
     </div>);
 
     const topRightHint = (<div
@@ -131,11 +205,12 @@ const WallInterfaceCardResizeBorder = (props: WallInterfaceCardResizingPropsType
             ...hintCommonStyle,
             top: '0%',
             left: 'calc(100% - ' + hintDimensions.w + 'px)',
+            cursor: 'nesw-resize',
         }}
     >
-        <svg width="100%" height="100%" viewBox="0 0 100 100">
+        {/* <svg width="100%" height="100%" viewBox="0 0 100 100">
             <path d="M 50 0 L 100 0 L 100 50" style={hintSvgStyle}  />
-        </svg>
+        </svg> */}
     </div>);
 
     const topHint = (<div
@@ -144,10 +219,11 @@ const WallInterfaceCardResizeBorder = (props: WallInterfaceCardResizingPropsType
             ...hintCommonStyle,
             top: '0%',
             left: 'calc(50% - ' + (hintDimensions.w / 2) + 'px)',
+            cursor: 'ns-resize',
         }}
     >
         <svg width="100%" height="100%" viewBox="0 0 100 100">
-            <path d="M 0 0 L 100 0" style={hintSvgStyle}  />
+            <path d="M 0 0 L 100 0" style={hintSvgStyle} />
         </svg>
     </div>);
 
@@ -157,11 +233,12 @@ const WallInterfaceCardResizeBorder = (props: WallInterfaceCardResizingPropsType
             ...hintCommonStyle,
             top: 'calc(100% - ' + hintDimensions.h + 'px)',
             left: '0%',
+            cursor: 'nesw-resize',
         }}
     >
-        <svg width="100%" height="100%" viewBox="0 0 100 100">
+        {/* <svg width="100%" height="100%" viewBox="0 0 100 100">
             <path d="M 0 50 L 0 100 L 50 100" style={hintSvgStyle}  />
-        </svg>
+        </svg> */}
     </div>);
 
     const bottomRightHint = (<div
@@ -170,11 +247,12 @@ const WallInterfaceCardResizeBorder = (props: WallInterfaceCardResizingPropsType
             ...hintCommonStyle,
             top: 'calc(100% - ' + hintDimensions.h + 'px)',
             left: 'calc(100% - ' + hintDimensions.w + 'px)',
+            cursor: 'nwse-resize',
         }}
     >
-        <svg width="100%" height="100%" viewBox="0 0 100 100">
+        {/* <svg width="100%" height="100%" viewBox="0 0 100 100">
             <path d="M 50 100 L 100 100 L 100 50" style={hintSvgStyle}  />
-        </svg>
+        </svg> */}
     </div>);
 
     const bottomHint = (<div
@@ -183,10 +261,11 @@ const WallInterfaceCardResizeBorder = (props: WallInterfaceCardResizingPropsType
             ...hintCommonStyle,
             top: 'calc(100% - ' + hintDimensions.h + 'px)',
             left: 'calc(50% - ' + (hintDimensions.w / 2) + 'px)',
+            cursor: 'ns-resize',
         }}
     >
         <svg width="100%" height="100%" viewBox="0 0 100 100">
-            <path d="M 0 100 L 100 100" style={hintSvgStyle}  />
+            <path d="M 0 100 L 100 100" style={hintSvgStyle} />
         </svg>
     </div>);
 
@@ -196,10 +275,11 @@ const WallInterfaceCardResizeBorder = (props: WallInterfaceCardResizingPropsType
             ...hintCommonStyle,
             top: 'calc(50% - ' + (hintDimensions.h / 2) + 'px)',
             left: '0%',
+            cursor: 'ew-resize',
         }}
     >
         <svg width="100%" height="100%" viewBox="0 0 100 100">
-            <path d="M 0 0 L 0 100" style={hintSvgStyle}  />
+            <path d="M 0 0 L 0 100" style={hintSvgStyle} />
         </svg>
     </div>);
 
@@ -209,10 +289,11 @@ const WallInterfaceCardResizeBorder = (props: WallInterfaceCardResizingPropsType
             ...hintCommonStyle,
             top: 'calc(50% - ' + (hintDimensions.h / 2) + 'px)',
             left: 'calc(100% - ' + hintDimensions.w + 'px)',
+            cursor: 'ew-resize',
         }}
     >
         <svg width="100%" height="100%" viewBox="0 0 100 100">
-            <path d="M 100 0 L 100 100" style={hintSvgStyle}  />
+            <path d="M 100 0 L 100 100" style={hintSvgStyle} />
         </svg>
     </div>);
 
@@ -221,6 +302,7 @@ const WallInterfaceCardResizeBorder = (props: WallInterfaceCardResizingPropsType
             ref={resizingBorderRef}
             className="wall-interface__card__resizing-border"
             style={containerStyle}
+            onMouseMove={onMouseMove}
         >
             <div
                 className="wall-interface__card__resizing-border__hints-container"
@@ -230,14 +312,14 @@ const WallInterfaceCardResizeBorder = (props: WallInterfaceCardResizingPropsType
                     className="wall-interface__card__resizing-border__hints-container__inner"
                     style={hintsContainerInnerStyle}
                 >
-                    {resizeHinting["top-left"] && topLeftHint}
-                    {resizeHinting["top-right"] && topRightHint}
-                    {resizeHinting["top"] && topHint}
-                    {resizeHinting["bottom-left"] && bottomLeftHint}
-                    {resizeHinting["bottom-right"] && bottomRightHint}
-                    {resizeHinting["bottom"] && bottomHint}
-                    {resizeHinting["left"] && leftHint}
-                    {resizeHinting["right"] && rightHint}
+                    {resizeHinting["top-left"] !== 'hidden' && topLeftHint}
+                    {resizeHinting["top-right"] !== 'hidden' && topRightHint}
+                    {resizeHinting["top"] !== 'hidden' && topHint}
+                    {resizeHinting["bottom-left"] !== 'hidden' && bottomLeftHint}
+                    {resizeHinting["bottom-right"] !== 'hidden' && bottomRightHint}
+                    {resizeHinting["bottom"] !== 'hidden' && bottomHint}
+                    {resizeHinting["left"] !== 'hidden' && leftHint}
+                    {resizeHinting["right"] !== 'hidden' && rightHint}
                 </div>
             </div>
 

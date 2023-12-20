@@ -15,8 +15,9 @@ function App() {
                     initialDimensions={{ w: 200, h: 200 }}
                     draggable={true}
                     focusable={false}
+                    resizable={false}
                 >
-                    Draggable, not focusable
+                    Draggable, not focusable, not resizable
                 </WallInterfaceCard>
                 <WallInterfaceCard
                     id={createCardId()}
@@ -24,8 +25,9 @@ function App() {
                     initialDimensions={{ w: 200, h: 200 }}
                     draggable={false}
                     focusable={true}
+                    resizable={true}
                 >
-                    Not draggable, focusable
+                    Not draggable, focusable, all resizable
                 </WallInterfaceCard>
 
                 <WallInterfaceCard
@@ -38,7 +40,7 @@ function App() {
                         "top-left": true,
                     }}
                 >
-                    Draggable, focusable
+                    Draggable, focusable, top-left resizable
                 </WallInterfaceCard>
 
                 <WallInterfaceCard
@@ -47,8 +49,18 @@ function App() {
                     initialDimensions={{ w: 200, h: 200 }}
                     draggable={'after-focus'}
                     focusable={true}
+                    resizable={{
+                        "top-left": true,
+                        "top-right": true,
+                        "top": true,
+                        "bottom-left": true,
+                        "bottom-right": true,
+                        "bottom": true,
+                        "left": true,
+                        "right": true,
+                    }}
                 >
-                    Draggable after focus, focusable    
+                    Draggable after focus, focusable, all resizable individually
                 </WallInterfaceCard>
             </WallInterfaceBoard>
         </div>
