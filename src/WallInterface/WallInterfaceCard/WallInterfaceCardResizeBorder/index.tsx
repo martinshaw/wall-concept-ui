@@ -88,8 +88,10 @@ const WallInterfaceCardResizeBorder = (props: WallInterfaceCardResizingPropsType
     }
 
     const hintsContainerInnerStyle: CSSProperties = {
-        width: '100%',
-        height: '100%',
+        marginLeft: '-2px',
+        marginTop: '-2px',
+        width: 'calc(100% + 4px)',
+        height: 'calc(100% + 4px)',
         position: 'relative',
     }
 
@@ -99,7 +101,7 @@ const WallInterfaceCardResizeBorder = (props: WallInterfaceCardResizingPropsType
         position: 'absolute',
         top: 0,
         left: 0,
-        backgroundColor: 'red',
+        // backgroundColor: 'red',
     };
 
     const topLeftHint = (<div
@@ -132,7 +134,10 @@ const WallInterfaceCardResizeBorder = (props: WallInterfaceCardResizingPropsType
             left: 'calc(50% - ' + (hintDimensions.w / 2) + 'px)',
         }}
     >
-        c
+        {/* horizontal line of 30px width and 3px height */}
+        <svg width="100%" height="100%" viewBox="0 0 100 100">
+            <line x1="0" y1="0" x2="100" y2="0" stroke="black" strokeWidth="10px" />
+        </svg>
     </div>);
 
     const bottomLeftHint = (<div
@@ -165,7 +170,10 @@ const WallInterfaceCardResizeBorder = (props: WallInterfaceCardResizingPropsType
             left: 'calc(50% - ' + (hintDimensions.w / 2) + 'px)',
         }}
     >
-        f
+        {/* horizontal line of 30px width and 3px height */}
+        <svg width="100%" height="100%" viewBox="0 0 100 100">
+            <line x1="0" y1="100" x2="100" y2="100" stroke="black" strokeWidth="10px" />
+        </svg>
     </div>);
 
     const leftHint = (<div
@@ -176,7 +184,10 @@ const WallInterfaceCardResizeBorder = (props: WallInterfaceCardResizingPropsType
             left: '0%',
         }}
     >
-        g
+        {/* Vertical line of 30px height and 3px width */}
+        <svg width="100%" height="100%" viewBox="0 0 100 100">
+            <line x1="0" y1="0" x2="0" y2="100" stroke="black" strokeWidth="10px" />
+        </svg>
     </div>);
 
     const rightHint = (<div
@@ -187,7 +198,10 @@ const WallInterfaceCardResizeBorder = (props: WallInterfaceCardResizingPropsType
             left: 'calc(100% - ' + hintDimensions.w + 'px)',
         }}
     >
-        h
+        {/* Vertical line of 30px height and 3px width */}
+        <svg width="100%" height="100%" viewBox="0 0 100 100">
+            <line x1="100" y1="0" x2="100" y2="100" stroke="black" strokeWidth="10px" />
+        </svg>
     </div>);
 
     return (
